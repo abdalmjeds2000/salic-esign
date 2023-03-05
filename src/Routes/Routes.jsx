@@ -18,9 +18,9 @@ const AppRoutes = () => {
     <Suspense fallback={<div className="flex justify-center mt-14"><Spinner size='xl' /></div>}>
       <Routes>
         <Route path='/' element={<Navigate to="/file" />} />
-        <Route path='/file' element={!isAllowShowDoc ? <ESignDocument /> : <Navigate to="/request-access" replace={true} />} />
+        <Route path='/file' element={isAllowShowDoc ? <ESignDocument /> : <Navigate to="/request-access" replace={true} />} />
         <Route path='/404-file' element={<File404 />} />
-        <Route path='/request-access' element={!isAllowShowDoc ? <Navigate to="/file" replace={true} /> : <OTP />} />
+        <Route path='/request-access' element={isAllowShowDoc ? <Navigate to="/file" replace={true} /> : <OTP />} />
       </Routes>
     </Suspense>
   )
