@@ -6,7 +6,7 @@ import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, 
 import ToolsHeader from "../components/ToolsHeader";
 import useOnScreen from "../hooks/useOnScreen";
 import { Signatures, SignaturePad, DrawDates } from "../components/signature-pad/SignaturePad";
-import { Layer, Rect, Stage } from "react-konva";
+import { Group, Layer, Rect, Stage } from "react-konva";
 import URLImage from "../components/konva-components/URLImage";
 import ContextMenu from "../components/konva-components/ContextMenu";
 import { HiOutlineTrash } from "react-icons/hi";
@@ -215,6 +215,22 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
       setImgData({ 
         // src: require(`../assets/images/imagesfile/Logotype ( PDFDrive )_page-${item.Index.toString().padStart(4, '0')}.jpg`),
         src: `https://salicapi.com/api/Signature/GetPage?Page=${item.Index-1}&q=${pdfQuality}`,
+        signaturesPlaces: [
+          {
+            x: 150,
+            y: 580,
+            width: 120,
+            height: 70,
+            scaleX: 1,
+            scaleY: 1,
+          }
+        ],
+        dates: [
+          {
+            x: 420,
+            y: 720,
+          }
+        ],
         index: item.Index, 
         size: "1MB", 
         alt: "", 
@@ -255,7 +271,6 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
       setIsReady(false);
     }, [pdfQuality]);
 
-
     const checkDeselect = (e) => {
       // deselect when clicked on empty area
       const clickedOnEmpty = e.target === e.target.getStage();
@@ -264,9 +279,6 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
         setShowContextMenu(false);
       }
     };
-
-
-
 
     const Drawing = () => (
       <Stage
@@ -279,30 +291,36 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
         onTouchStart={checkDeselect}
       >
         <Layer>
-          {item?.signaturesPlaces?.map((sign, i) => (
-            <URLImage
-              key={i}
-              src={signPlaceholder}
-              shapeProps={{
-                ...sign,
-                draggable: false,
-                shadowBlur: 10,
-                shadowOpacity: 0.15,
-                shadowOffsetY: 2,
-                onClick: (e) => {
+          {imgData?.signaturesPlaces?.map((sign, i) => (
+            <Group>
+              <URLImage
+                key={i}
+                src={signPlaceholder}
+                shapeProps={{
+                  ...sign,
+                  draggable: false,
+                  shadowBlur: 5,
+                  shadowOpacity: 0.15,
+                  shadowOffsetY: 3,
+                }}
+              />
+              <Rect 
+                {...sign}
+                fill="#8ea4ff33"
+                onClick={(e) => {
                   setNewSignAttrs({...sign, page: item.Index});
                   onOpen();
                   selectShape(null);
-                },
-                onTap: (e) => {
+                }}
+                onTap={(e) => {
                   setNewSignAttrs({...sign, page: item.Index});
                   onOpen();
                   selectShape(null);
-                },
-              }}
-            />
+                }}
+              />
+            </Group>
           ))}
-          {item?.dates?.map((date, i) => (
+          {imgData?.dates?.map((date, i) => (
             <Rect
               key={i}
               x={date.x}

@@ -329,7 +329,7 @@ export const Signatures = memo(function Signatures({ pageNumber }) {
                 src={item.imageData}
                 shapeProps={{
                   ...item,
-                  draggable: true,
+                  draggable: false,
                   onDragEnd: handleDragEnd,
                   // : onContextMenu,
                   onContextMenu: onContextMenu,
