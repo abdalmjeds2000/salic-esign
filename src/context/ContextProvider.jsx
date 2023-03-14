@@ -97,10 +97,13 @@ export const ContextProvider = ({ children }) => {
 
   // handle delete selected signature
   const handleDeleteSignature = () => {
-    const newSignatureList = signatures.filter(sign => sign._id !== selectedId);
-    setSignatures(newSignatureList);
-    selectShape(null);
-    setShowContextMenu(false);
+      const newSignatureList = signatures.map(sign => {
+        if(sign._id === selectedId) sign.originalImage = null;
+        return sign;
+      });
+      setSignatures(newSignatureList);
+      selectShape(null);
+      setShowContextMenu(false);
   }
   const keydownHandler = (e) => {
     if(e.key === "Delete" && selectedId) {

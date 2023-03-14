@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useStateContext } from "../context/ContextProvider";
 import Header from "../components/Header";
-// import { Scrollbars } from 'react-custom-scrollbars-2';
 import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Skeleton, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Spinner, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
 import ToolsHeader from "../components/ToolsHeader";
 import useOnScreen from "../hooks/useOnScreen";
-import { Signatures, SignaturePad, DrawDates } from "../components/signature-pad/SignaturePad";
-import { Group, Layer, Rect, Stage } from "react-konva";
-import URLImage from "../components/konva-components/URLImage";
+import SignaturePad from "../components/signature-pad/SignaturePad";
+import DrawDates from '../components/DrawDates';
+import DrawSignatures from '../components/DrawSignatures';
+import { Layer, Rect, Stage } from "react-konva";
 import ContextMenu from "../components/konva-components/ContextMenu";
 import { HiOutlineTrash } from "react-icons/hi";
 import { CgArrowsExchange } from "react-icons/cg";
@@ -101,77 +101,84 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
       minHeight: 80,
     }
     return (
-      <div 
-        key={item.Index} 
-        id={`thumb_${item.Index}`} 
-        ref={thumbRef}
-        className={`thumb-item flex flex-col items-center w-fit h-fit transition-all cursor-pointer bg-neutral-300 dark:bg-neutral-900 dark:bg-opacity-25 bg-opacity-25 dark:hover:bg-opacity-100 hover:bg-opacity-100 ${activePage === item.Index ? "bg-opacity-100 dark:bg-opacity-100" : ""} p-4 pb-1 max-md:p-0 max-md:rounded-sm rounded-lg`}
+      <a 
+        href={`#page_${item.Index}`} 
+        onClick={() => {
+          setActivePage(item.Index);
+          // const element = document.getElementById(`page_${item.Index}`);
+          // if (element) element.parentNode.scrollTop = element.offsetTop;
+          // if (element) element.scrollIntoView({ behavior: "smooth" });
+        }}
       >
-        <div className="thumb-head"></div>
         <div 
-          className={`thumb-body relative overflow-hidden bg-white shadow-xl ${activePage === item.Index && "outline outline-4 outline-slate-400 dark:outline-slate-400"}`} 
-          style={isMobile ? mobileStylesPage : desktopStylesPage}
+          key={item.Index} 
+          id={`thumb_${item.Index}`} 
+          ref={thumbRef}
+          className={`thumb-item flex flex-col items-center w-fit h-fit transition-all cursor-pointer bg-neutral-300 dark:bg-neutral-900 dark:bg-opacity-25 bg-opacity-25 dark:hover:bg-opacity-100 hover:bg-opacity-100 ${activePage === item.Index ? "bg-opacity-100 dark:bg-opacity-100" : ""} p-4 pb-1 max-md:p-0 max-md:rounded-sm rounded-lg`}
         >
-          <Skeleton
-            height='100%'
-            isLoaded={!loading}
-            fadeDuration={2}
-            bg='white'
-          >
-            {!loading && 
-              <div className="relative">
-                <img 
-                  src={`https://salicapi.com/api/Signature/GetThumbnailPage?Page=${item.Index-1}`} alt=""
-                  width="100%" height="100%" 
-                  loading="lazy"
-                  onClick={() => {
-                    setActivePage(item.Index);
-                    const element = document.getElementById(`page_${item.Index}`);
-                    if (element) element.scrollIntoView({ behavior: "smooth" });
-                  }}
-                />
-                <span className="md:hidden absolute bottom-0.5 right-0 text-xs text-neutral-500 px-1">{item.Index}</span>
-                <span className="absolute left-1 top-1">
-                  {item.Index === 1 || item.Index === 3 ? <div>
-                    <Button size="xs" rounded="full" paddingX={1} className="shadow-md" colorScheme="green" onClick={onOpen}><BiMessageAltDetail size={16} /></Button>
-                    <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
-                      <ModalOverlay />
-                      <ModalContent>
-                        <ModalHeader>
-                          <span className="flex items-center gap-2">
-                            <BiMessageAltDetail size={18} /> Inviter Notes
-                          </span>
-                        </ModalHeader>
-                        <ModalCloseButton />
-                        <ModalBody>
-                          <Text fontWeight='bold' mb='1rem'>
-                            Here, You can Read Inviter Notes
-                          </Text>
-                          <p>
-                            Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.
-                          </p>
-                          <p>
-                            Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
-                          </p>
-                        </ModalBody>
+          <div className="thumb-head"></div>
+            <div 
+              className={`thumb-body relative overflow-hidden bg-white shadow-xl ${activePage === item.Index && "outline outline-4 outline-slate-400 dark:outline-slate-400"}`} 
+              style={isMobile ? mobileStylesPage : desktopStylesPage}
+            >
+              <Skeleton
+                height='100%'
+                isLoaded={!loading}
+                fadeDuration={2}
+                bg='white'
+              >
+                {!loading && 
+                  <div 
+                    className="relative"
+                  >
+                      <img 
+                        src={`https://salicapi.com/api/Signature/GetThumbnailPage?Page=${item.Index-1}`} alt=""
+                        width="100%" height="100%" 
+                        loading="lazy"
+                      />
+                    <span className="md:hidden absolute bottom-0.5 right-0 text-xs text-neutral-500 px-1">{item.Index}</span>
+                    <span className="absolute left-1 top-1">
+                      {item.Index === 1 || item.Index === 3 ? <div>
+                        <Button size="xs" rounded="full" paddingX={1} className="shadow-md" colorScheme="green" onClick={onOpen}><BiMessageAltDetail size={16} /></Button>
+                        <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+                          <ModalOverlay />
+                          <ModalContent>
+                            <ModalHeader>
+                              <span className="flex items-center gap-2">
+                                <BiMessageAltDetail size={18} /> Inviter Notes
+                              </span>
+                            </ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                              <Text fontWeight='bold' mb='1rem'>
+                                Here, You can Read Inviter Notes
+                              </Text>
+                              <p>
+                                Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi. Mollit officia cillum Lorem ullamco minim nostrud elit officia tempor esse quis.
+                              </p>
+                              <p>
+                                Sunt ad dolore quis aute consequat. Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
+                              </p>
+                            </ModalBody>
 
-                        <ModalFooter>
-                          <Button colorScheme='blue' mr={3} onClick={onClose}>
-                            OK
-                          </Button>
-                        </ModalFooter>
-                      </ModalContent>
-                    </Modal>
-                  </div> : null}
-                </span>
-              </div>
-            }
-          </Skeleton>
+                            <ModalFooter>
+                              <Button colorScheme='blue' mr={3} onClick={onClose}>
+                                OK
+                              </Button>
+                            </ModalFooter>
+                          </ModalContent>
+                        </Modal>
+                      </div> : null}
+                    </span>
+                  </div>
+                }
+              </Skeleton>
+            </div>
+          <div className={`thumb-footer text-text-color dark:text-white max-md:hidden ${activePage === item.Index ? "text-slate-500 font-semibold" : ""}`}>
+            {item.Index}
+          </div>
         </div>
-        <div className={`thumb-footer text-text-color dark:text-white max-md:hidden ${activePage === item.Index ? "text-slate-500 font-semibold" : ""}`}>
-          {item.Index}
-        </div>
-      </div>
+      </a>
     )
   }
   const Thumbs = ({ pages }) => {
@@ -184,17 +191,15 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
           <SliderThumbs getSliderValue={setSliderValue} />
           {/* <h3 className="font-semibold text-xl text-text-color dark:text-white">Thumbnails</h3> */}
         </div>
-        {/* <Scrollbars> */}
-          <div className='thumbs-body flex justify-center flex-wrap gap-y-4 max-md:gap-y-2 gap-x-2 max-md:py-1'>
-            {
-              pages?.map((item, i) => {
-                return (
-                  <Thumb key={i} item={item} sliderValue={sliderValue} />
-                )
-              })
-            }
-          </div>
-        {/* </Scrollbars> */}
+        <div className='thumbs-body flex justify-center flex-wrap gap-y-4 max-md:gap-y-2 gap-x-2 max-md:py-1'>
+          {
+            pages?.map((item, i) => {
+              return (
+                <Thumb key={i} item={item} sliderValue={sliderValue} />
+              )
+            })
+          }
+        </div>
         <div className="thumbs-footer"></div>
       </div>
     )
@@ -202,7 +207,7 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
 
   const Page = ({item, totalPages}) => {
     const pageRef = useRef();
-    const { scale, rotation, selectedId, pdfQuality, selectShape, onOpen, setNewSignAttrs, handleCloseContextMenu, showContextMenu, contextMenuPosition, setShowContextMenu, handleDeleteSignature, handelAddDate, showDateContextMenu, dateContextMenuPosition, handleDeleteDate } = useStateContext();
+    const { signatures, setSignatures, scale, rotation, selectedId, pdfQuality, selectShape, onOpen, setNewSignAttrs, handleCloseContextMenu, showContextMenu, contextMenuPosition, setShowContextMenu, handleDeleteSignature, handelAddDate, showDateContextMenu, dateContextMenuPosition, handleDeleteDate } = useStateContext();
     const [isReady, setIsReady] = useState(false);
     const [imgData, setImgData] = useState({});
     const [loading, setLoading] = useState(true);
@@ -212,7 +217,7 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
 
     const fetchPage = useCallback(async () => {
       setLoading(true);
-      setImgData({ 
+      const data = { 
         // src: require(`../assets/images/imagesfile/Logotype ( PDFDrive )_page-${item.Index.toString().padStart(4, '0')}.jpg`),
         src: `https://salicapi.com/api/Signature/GetPage?Page=${item.Index-1}&q=${pdfQuality}`,
         signaturesPlaces: [
@@ -236,7 +241,8 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
         alt: "", 
         width: item.width, 
         height: item.height, 
-      });
+      };
+      setImgData(data);
       setIsReady(true);
 
       setLoading(false);
@@ -291,7 +297,7 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
         onTouchStart={checkDeselect}
       >
         <Layer>
-          {imgData?.signaturesPlaces?.map((sign, i) => (
+          {/* {imgData?.signaturesPlaces?.map((sign, i) => (
             <Group>
               <URLImage
                 key={i}
@@ -319,7 +325,7 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
                 }}
               />
             </Group>
-          ))}
+          ))} */}
           {imgData?.dates?.map((date, i) => (
             <Rect
               key={i}
@@ -344,12 +350,28 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
           ))}
         </Layer>
         <Layer clearBeforeDraw={true}>
-          <Signatures pageNumber={item.Index} />
+          <DrawSignatures pageNumber={item.Index} />
           <DrawDates pageNumber={item.Index} />
         </Layer>
       </Stage>
-    )
+    );
     
+
+
+    useEffect(() => {
+      if(isLoaded) {
+        const pageSignatures = imgData.signaturesPlaces.map(sign => ({
+          _id:  `${item.Index}__${signatures.length}`,
+          page: item.Index,
+          imageData: signPlaceholder,
+          originalImage: null,
+          ...sign
+        }));
+        setSignatures(prev => [...prev, ...pageSignatures]);
+      }
+    }, [isLoaded]);
+
+
     return (
       <div key={item.Index} ref={pageRef} id={`page_${item.Index}`} className={`page-item mb-6 transition-all ${isReady ? "opacity-100" : "opacity-25"}`}>
         <div 
@@ -417,21 +439,19 @@ import signPlaceholder from "../assets/images/sign_placeholder.png";
       <div className="flex-[7] flex flex-col bg-neutral-300 px-0 md:px-6 dark:bg-neutral-700 overflow-auto">
         <div className="pages-header"></div>
         <div className='pages-body h-full'>
-          {/* <Scrollbars style={{ height: "100%" }}> */}
-            <div ref={pagesParentRef} id="pagesParentRef" className='pages block h-full pt-5 pb-10'>
-              {
-                pages?.map((item) => (
-                  <div key={item.Index} className="mx-auto last:pb-8" style={{ width: item.width * scale }}>
-                    <Page
-                      item={item} 
-                      totalPages={pages.length} 
-                      // setDocumentSchema={setDocumentSchema}
-                    />
-                  </div>
-                ))
-              }
-            </div>
-          {/* </Scrollbars> */}
+          <div ref={pagesParentRef} id="pagesParentRef" className='pages block h-full pt-5 pb-10'>
+            {
+              pages?.map((item) => (
+                <div key={item.Index} className="mx-auto last:pb-8" style={{ width: item.width * scale }}>
+                  <Page
+                    item={item} 
+                    totalPages={pages.length} 
+                    // setDocumentSchema={setDocumentSchema}
+                  />
+                </div>
+              ))
+            }
+          </div>
         </div>
         <div className="pages-footer"></div>
       </div>

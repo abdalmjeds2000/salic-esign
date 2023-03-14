@@ -27,6 +27,10 @@ body {
 
 .signatures-drawer-canvas {
   border-color: #ddd !important;
+  border: 0 !important;
+  border-bottom: 1px solid #eee !important;
+  padding-top: 5px;
+  border-radius: 0 !important;
 }
 
 /* Hide the input element */

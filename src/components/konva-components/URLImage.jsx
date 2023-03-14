@@ -24,40 +24,40 @@ const URLImage = function URLImage(props) {
   const maxX = 300;
   const maxY = 1020;
 
-  const handleDragBound = (pos) => {
-    const rectNode = shapeRef.current;
+  // const handleDragBound = (pos) => {
+  //   const rectNode = shapeRef.current;
 
-    // Define the limits of the draggable area
-    //UP 
+  //   // Define the limits of the draggable area
+  //   //UP 
 
-    // Get the current scale of the shape
-    const scaleX = rectNode?.scaleX() || 0;
-    const scaleY = rectNode?.scaleY() || 0;
+  //   // Get the current scale of the shape
+  //   const scaleX = rectNode?.scaleX() || 0;
+  //   const scaleY = rectNode?.scaleY() || 0;
 
-    // Calculate the scaled width and height of the shape
-    const scaledWidth = rectNode?.width() || 0 * scaleX;
-    const scaledHeight = rectNode?.height() || 0 * scaleY;
+  //   // Calculate the scaled width and height of the shape
+  //   const scaledWidth = rectNode?.width() || 0 * scaleX;
+  //   const scaledHeight = rectNode?.height() || 0 * scaleY;
 
-    // Limit the position of the draggable element within the defined limits
-    const newRightX = pos.x + scaledWidth;
-    const newBottomY = pos.y + scaledHeight;
+  //   // Limit the position of the draggable element within the defined limits
+  //   const newRightX = pos.x + scaledWidth;
+  //   const newBottomY = pos.y + scaledHeight;
 
-    const newX = Math.max(minX, Math.min(pos.x, maxX - scaledWidth));
-    const newY = Math.max(minY, Math.min(pos.y, maxY - scaledHeight));
+  //   const newX = Math.max(minX, Math.min(pos.x, maxX - scaledWidth));
+  //   const newY = Math.max(minY, Math.min(pos.y, maxY - scaledHeight));
 
-    const newRightBoundX = Math.max(minX + scaledWidth, Math.min(newRightX, maxX));
-    const newBottomBoundY = Math.max(minY + scaledHeight, Math.min(newBottomY, maxY));
+  //   const newRightBoundX = Math.max(minX + scaledWidth, Math.min(newRightX, maxX));
+  //   const newBottomBoundY = Math.max(minY + scaledHeight, Math.min(newBottomY, maxY));
 
-    const newWidth = newRightBoundX - newX;
-    const newHeight = newBottomBoundY - newY;
+  //   const newWidth = newRightBoundX - newX;
+  //   const newHeight = newBottomBoundY - newY;
 
-    return {
-      x: newX,
-      y: newY,
-      width: newWidth / scaleX,
-      height: newHeight / scaleY
-    };
-  };
+  //   return {
+  //     x: newX,
+  //     y: newY,
+  //     width: newWidth / scaleX,
+  //     height: newHeight / scaleY
+  //   };
+  // };
 
   return (
     <React.Fragment>
@@ -76,28 +76,29 @@ const URLImage = function URLImage(props) {
             if(onSelect) onSelect();
             if(onTap) onTap(e);
           }}
-          // onMouseOver={() => document.body.style.cursor = "pointer"}
-          // onMouseLeave={() => document.body.style.cursor = "initial"}
           perfectDrawEnabled={false}
+          shadowBlur={5}
+          shadowOffsetY={3}
+          shadowColor={"#00000025"}
           {...shapeProps}
-          onTransformEnd={(e) => {
-            const node = shapeRef.current;
-            const scaleX = node.scaleX();
-            const scaleY = node.scaleY();
-            onChange({
-              // ...node.attrs,
-              x: node.x(),
-              y: node.y(),
-              width: node.width(),
-              height: node.height(),
-              scaleX: scaleX,
-              scaleY: scaleY,
-              rotation: node.attrs.rotation,
-              draggable: node.attrs.draggable,
-              signPaths: node.attrs.draggable || null,
-              type: node.attrs.type,
-            });
-          }}
+          // onTransformEnd={(e) => {
+          //   const node = shapeRef.current;
+          //   const scaleX = node.scaleX();
+          //   const scaleY = node.scaleY();
+          //   onChange({
+          //     // ...node.attrs,
+          //     x: node.x(),
+          //     y: node.y(),
+          //     width: node.width(),
+          //     height: node.height(),
+          //     scaleX: scaleX,
+          //     scaleY: scaleY,
+          //     rotation: node.attrs.rotation,
+          //     draggable: node.attrs.draggable,
+          //     // signPaths: node.attrs.draggable || null,
+          //     type: node.attrs.type,
+          //   });
+          // }}
         />
         {isSelected && (
           <Transformer
@@ -115,7 +116,8 @@ const URLImage = function URLImage(props) {
               if (newBox.width < 25 || newBox.height < 25) {
                 return oldBox;
               }
-              return newBox;
+              // return newBox;
+              return oldBox; // to prevent scale
             }}
           />
         )}
